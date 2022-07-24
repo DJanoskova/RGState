@@ -114,14 +114,14 @@ const PostDelete = () => {
 
 - The setter accepts
     - a value
-    - a function, which provides you with the current value and current state as parameters, very similar to React's useState API
+    - a function, which provides you with the current value as a parameter, very similar to React's useState API
 
 ```js
 setPosts([{ id: 1, name: 'New Post' }])
 ```
 
 ```js
-setPosts((previousPosts, previousGlobalState) => {
+setPosts((previousPosts) => {
     const newPosts = [...previousPosts]
     newPosts.slice(0, 1)
     return newPosts
@@ -146,6 +146,6 @@ const PostDelete = () => {
 
 ---
 
-As you introduce global states, global setters and global getters throughout your App, the values are stored in the same place. The setter accepts a function as a parameter and this function exposes the current value related to the setter as a first parameter, and the global state value as a second parameter.
+As you introduce global states, global setters and global getters throughout your App, the values are stored in the same place. The setter accepts a function as a parameter and this function exposes the current value related to the setter as a parameter.
 
 No matter how much you scale your app and how much global state properties you add, the implementation stays this simple.

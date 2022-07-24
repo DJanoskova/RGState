@@ -41,7 +41,7 @@ export const useGlobalSetter = <T, >(stateInstance: GlobalState<T>) => {
       if (typeof handler === 'function') {
         const previousValue = previous[displayedName] === undefined ? stateInstance._defaultValue : previous[displayedName];
         // @ts-ignore
-        result = handler(previousValue, previous);
+        result = handler(previousValue);
       } else {
         result = handler;
       }
