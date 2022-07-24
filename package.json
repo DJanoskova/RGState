@@ -1,6 +1,6 @@
 {
   "name": "rgstate",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Global state for React with a 2 line hook implementation",
   "repository": "https://github.com/DJanoskova/RGState",
   "author": "DJanoskova",
@@ -25,6 +25,6 @@
   },
   "peerDependencies": {
     "react": ">=18",
-    "uuid": "^6"
+    "uuid": "^7.0.0"
   }
 }
