@@ -15,7 +15,7 @@ import React, { useEffect } from 'react';
 import { createGlobalState, useGlobalState } from 'rgstate';
 
 // inspired by React.createContext
-export const PostsState = createGlobalState([]);
+export const PostsState = createGlobalState([], { name: 'posts' });
 
 export default function App() {
   // inspired by React.useState
@@ -79,6 +79,14 @@ import { createGlobalState } from 'rgstate';
 export const PostsState = createGlobalState<{ id: number; name: string; }[]>([]);
 ```
 _state.ts_
+
+**Recommended**
+
+Provide an optional key name for the internal store. If you skip this, a new uuid will be generated when the global state initializes. This causes issues with application hot reload where you could lose your stored data during development if you don't provide a key name. 
+
+```javascript
+export const PostsState = createGlobalState([], { name: 'posts' });
+```
 
 ### useGlobalState
 

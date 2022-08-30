@@ -12,3 +12,6 @@ export interface GlobalState<T> {
     _id: string;
     _defaultValue: T;
 }
+export interface CreateStoreOptions {
+    name?: string;
+}
