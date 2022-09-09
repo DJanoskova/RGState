@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { deepRecreate } from 'object-deep-recreate';
 
 import {
   CreateStoreOptions,
@@ -10,6 +11,7 @@ import {
 } from './types';
 
 import { useStore } from './externalStore';
+import { getStoredState, setStoredState } from './localStorage';
 
 let store: StoreType | undefined;
 
@@ -17,7 +19,8 @@ let store: StoreType | undefined;
  * https://blog.saeloun.com/2021/12/30/react-18-usesyncexternalstore-api
  */
 export const createStore = (initialState: StateType = {}): StoreType => {
-  let state = initialState;
+  const storedState = getStoredState();
+  let state = { ...storedState, ...initialState };
   const getState = () => state;
 
   const listeners: Set<StoreListenerType> = new Set();
@@ -38,17 +41,13 @@ export const createStore = (initialState: StateType = {}): StoreType => {
   return { getState, setState, subscribe };
 };
 
-export function createGlobalState<T>(defaultValue: T, { name }: CreateStoreOptions = {}): GlobalState<T> {
+export function createGlobalState<T>(defaultValue: T, { name, persist = false }: CreateStoreOptions = {}): GlobalState<T> {
   if (!store) store = createStore();
-
-  if (name) {
-    const existingValue = store.getState()[name];
-    if (existingValue) return existingValue;
-  }
 
   return {
     _defaultValue: defaultValue,
     _id: name || uuidv4(),
+    _persist: persist,
   }
 }
 
@@ -67,23 +66,34 @@ export const useGlobalGetter = <T, >(stateInstance: GlobalState<T>): T => {
   return value === undefined ? stateInstance._defaultValue : value;
 };
 
+export const getStateValue = <T, >(state: StateType, stateInstance: GlobalState<T>) => {
+  const currentValue = state[stateInstance._id];
+  return currentValue === undefined ? stateInstance._defaultValue : currentValue;
+}
+
 export const useGlobalSetter = <T, >(stateInstance: GlobalState<T>) => {
   const handleStateSet = useCallback((handler: GlobalStateSetType<T>) => {
     const setter = (previous: StateType) => {
       const displayedName = stateInstance._id;
       let result: T;
 
+      const previousValue = getStateValue<T>(previous, stateInstance);
+      const snapshot = JSON.parse(JSON.stringify(previousValue));
       if (typeof handler === 'function') {
-        const previousValue = previous[displayedName] === undefined ? stateInstance._defaultValue : previous[displayedName];
         // @ts-ignore
         result = handler(previousValue);
       } else {
         result = handler;
       }
 
+      const recreatedResult = deepRecreate(result, snapshot);
+      if (stateInstance._persist) {
+        setStoredState(stateInstance._id, recreatedResult)
+      }
+
       return {
         ...previous,
-        [displayedName]: result,
+        [displayedName]: recreatedResult,
       };
     };
 

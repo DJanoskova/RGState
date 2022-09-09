@@ -13,9 +13,10 @@ export type GlobalStateSetValuesType<T> = [T, (handler: GlobalStateSetType<T>) =
 export interface GlobalState<T> {
   _id: string;
   _defaultValue: T;
+  _persist: boolean;
 }
 
 export interface CreateStoreOptions {
   name?: string;
-  // persist?: boolean;
+  persist?: boolean;
 }

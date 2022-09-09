@@ -40,10 +40,6 @@ export default function App() {
 
 And that's all you need!
 
-### See a demo in StackBlitz editor:
-
-https://stackblitz.com/edit/react-ofmsdv?file=src/index.js
-
 ---
 
 ## API
@@ -59,10 +55,12 @@ import {
 
 - `createGlobalState` to initialize your global state
 - `useGlobalState` to get the `[value, setter]` variables
-- `useGlobalSetter` to get the static setter only
-- `useGlobalGetter` to get the reactive value only
+- `useGlobalSetter` to get the static `setter` only
+- `useGlobalGetter` to get the reactive `value` only
 
 ### createGlobalState
+
+_createGlobalState&lt;T&gt;(defaultValue: any, params: { name?: string; persist?: boolean }) => GlobalState&lt;T&gt;_
 
 - Initialize RGState like React's context, using `createGlobalState` and providing a default value
 
@@ -71,16 +69,8 @@ import { createGlobalState } from 'rgstate';
 
 export const PostsState = createGlobalState([]);
 ```
-_state.js_
 
-```typescript
-import { createGlobalState } from 'rgstate';
-
-export const PostsState = createGlobalState<{ id: number; name: string; }[]>([]);
-```
-_state.ts_
-
-**Recommended**
+**Custom name** - Recommended 🚨
 
 Provide an optional key name for the internal store. If you skip this, a new uuid will be generated when the global state initializes. This causes issues with application hot reload where you could lose your stored data during development if you don't provide a key name. 
 
@@ -88,7 +78,18 @@ Provide an optional key name for the internal store. If you skip this, a new uui
 export const PostsState = createGlobalState([], { name: 'posts' });
 ```
 
+**Sync with local storage**
+
+If you want to store your last data shape in your browser storage, use the `persist: true` config option
+
+```javascript
+export const PostsState = createGlobalState([], { persist: true });
+```
+
 ### useGlobalState
+
+_useGlobalState(GlobalState) => [value: T, setter: (handler: GlobalStateSetType&lt;T&gt;) => void]_
+
 
 - Use it like React's state
 - the `useGlobalState` hook returns values provided by `useGlobalGetter` and `useGlobalSetter`
@@ -105,6 +106,8 @@ const App = () => {
 ```
 
 ### useGlobalSetter
+
+_useGlobalSetter(GlobalState) => (handler: GlobalStateSetType&lt;T&gt;) => void_
 
 - In case you only need the setter and don't need the reactivity of the current value, opt in for using `useGlobalSetter`
 - The returned method doesn't re-create and therefore it's safe to use it as a `useEffect` or `useCallback` dependency
@@ -137,6 +140,8 @@ setPosts((previousPosts) => {
 ```
 
 ### useGlobalGetter
+
+_useGlobalGetter(GlobalState) => value: T_
 
 - When you don't need the setter and are only concerned about the current reactive value, use `useGlobalGetter`
 - The returned value re-creates only when the value is directly changed and it's not affected by other global values changing

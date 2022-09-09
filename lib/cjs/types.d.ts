@@ -11,7 +11,9 @@ export declare type GlobalStateSetValuesType<T> = [T, (handler: GlobalStateSetTy
 export interface GlobalState<T> {
     _id: string;
     _defaultValue: T;
+    _persist: boolean;
 }
 export interface CreateStoreOptions {
     name?: string;
+    persist?: boolean;
 }
