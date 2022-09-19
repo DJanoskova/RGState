@@ -1,1 +1,1 @@
-export { createGlobalState, useGlobalState, useGlobalGetter, useGlobalSetter } from './store';
+export { createGlobalState, useGlobalState, useGlobalGetter, useGlobalSetter, handleExternalValueSet } from './store';

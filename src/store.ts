@@ -73,34 +73,41 @@ export const getStateValue = <T, >(state: StateType, stateInstance: GlobalState<
 
 export const useGlobalSetter = <T, >(stateInstance: GlobalState<T>) => {
   const handleStateSet = useCallback((handler: GlobalStateSetType<T>) => {
-    const setter = (previous: StateType) => {
-      const displayedName = stateInstance._id;
-      let result: T;
-
-      const previousValue = getStateValue<T>(previous, stateInstance);
-      const snapshot = JSON.parse(JSON.stringify(previousValue));
-      if (typeof handler === 'function') {
-        // @ts-ignore
-        result = handler(previousValue);
-      } else {
-        result = handler;
-      }
-
-      const recreatedResult = deepRecreate(result, snapshot);
-      if (stateInstance._persist) {
-        setStoredState(stateInstance._id, recreatedResult)
-      }
-
-      return {
-        ...previous,
-        [displayedName]: recreatedResult,
-      };
-    };
-
-    if (!store) store = createStore();
-
-    store.setState(setter);
-  }, [stateInstance._defaultValue, stateInstance._id]);
+    return handleExternalValueSet(stateInstance, handler);
+  }, [stateInstance._defaultValue, stateInstance._id, stateInstance._persist]);
 
   return handleStateSet;
 };
+
+/**
+ * To set state externally
+ */
+export const handleExternalValueSet = <T, >(stateInstance: GlobalState<T>, handler: GlobalStateSetType<T>) => {
+  const setter = (previous: StateType) => {
+    const displayedName = stateInstance._id;
+    let result: T;
+
+    const previousValue = getStateValue<T>(previous, stateInstance);
+    const snapshot = JSON.parse(JSON.stringify(previousValue));
+    if (typeof handler === 'function') {
+      // @ts-ignore
+      result = handler(previousValue);
+    } else {
+      result = handler;
+    }
+
+    const recreatedResult = deepRecreate(result, snapshot);
+    if (stateInstance._persist) {
+      setStoredState(stateInstance._id, recreatedResult)
+    }
+
+    return {
+      ...previous,
+      [displayedName]: recreatedResult,
+    };
+  };
+
+  if (!store) store = createStore();
+
+  store.setState(setter);
+}
