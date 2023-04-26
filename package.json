@@ -1,6 +1,6 @@
 {
   "name": "rgstate",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Global state for React with a 2 line hook implementation",
   "repository": "https://github.com/DJanoskova/RGState",
   "author": "DJanoskova",
@@ -17,7 +17,7 @@
   "keywords": [
     "react",
     "state",
-    "store",
+    "global",
     "management",
     "simple"
   ],
@@ -25,17 +25,17 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "dependencies": {
-    "object-deep-recreate": "^1.0.1"
+    "object-deep-recreate": "^1.0.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.15",
     "@types/uuid": "^8.3.4",
     "react": "^18.2.0",
-    "typescript": "^4.7.4",
-    "uuid": "^8.3.2"
+    "typescript": "^4.7.4"
   },
   "peerDependencies": {
     "react": ">=18",
-    "uuid": "^7.0.0"
+    "uuid": "^8.3.2"
   }
 }
